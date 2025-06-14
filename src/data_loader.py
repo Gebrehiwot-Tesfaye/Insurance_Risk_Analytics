@@ -13,7 +13,17 @@ def load_data(filepath: str) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Loaded data.
     """
-    df = pd.read_csv(filepath, delimiter='\t')
+    # Read the first line to get column names
+    with open(filepath, 'r') as f:
+        header = f.readline().strip().split('|')
+    
+    # Read the data with the correct separator and column names
+    df = pd.read_csv(filepath, 
+                     sep='|',  # Use pipe as separator
+                     skiprows=1,  # Skip the header row since we're providing column names
+                     names=header,  # Use the column names we extracted
+                     low_memory=False)  # Handle mixed data types
+    
     return df
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
